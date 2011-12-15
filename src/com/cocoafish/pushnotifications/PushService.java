@@ -35,7 +35,7 @@ public class PushService extends Service
 	public static final String		TAG = "PushNotificationsService";
 
 	// the IP address, where your MQTT broker is running.
-	private static final String		MQTT_HOST = "9.123.156.142";
+	private static final String		MQTT_HOST = "9.115.124.196";
 	// the port at which the broker is running. 
 	private static int				MQTT_BROKER_PORT_NUM      = 1883;
 	// Let's not use the MQTT persistence.
@@ -452,6 +452,14 @@ public class PushService extends Service
 		
 				log("Connection established to " + brokerHostName + " on topic " + initTopic);
 		
+				try{
+					String message = "register 1";
+					mqttClient.publish(PushService.MQTT_CLIENT_ID + "/PushServer", message.getBytes(), PushService.MQTT_QUALITY_OF_SERVICE, PushService.MQTT_RETAINED_PUBLISH);
+				}
+				catch(MqttException ex){
+					log("MqttException" + (ex.getMessage() != null? ex.getMessage():" NULL"), ex);
+				}
+
 				// Save start time
 				mStartTime = System.currentTimeMillis();
 				// Star the keep-alives
@@ -460,6 +468,13 @@ public class PushService extends Service
 		
 		// Disconnect
 		public void disconnect() {
+			try{
+				String message = "remove 1";
+				mqttClient.publish(PushService.MQTT_CLIENT_ID + "/PushServer", message.getBytes(), PushService.MQTT_QUALITY_OF_SERVICE, PushService.MQTT_RETAINED_PUBLISH);
+			}
+			catch(MqttException ex){
+				log("MqttException" + (ex.getMessage() != null? ex.getMessage():" NULL"), ex);
+			}
 			try {			
 				stopKeepAlives();
 				mqttClient.disconnect();
